@@ -121,13 +121,13 @@ function buildSparkOptions(
     // Sparkline ekseni gizli tutar; bu yalnızca tooltip başlığını besler.
     ...(hasCategories
       ? {
-          xaxis: {
-            categories,
-            labels: { show: false },
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-          },
-        }
+        xaxis: {
+          categories,
+          labels: { show: false },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+        },
+      }
       : {}),
     tooltip: {
       enabled: true,
