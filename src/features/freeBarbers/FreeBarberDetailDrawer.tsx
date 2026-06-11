@@ -6,6 +6,7 @@ import DetailInfoBox from "../../components/common/DetailInfoBox";
 import DetailOfferingsList from "../../components/common/DetailOfferingsList";
 import DetailPackagesList from "../../components/common/DetailPackagesList";
 import DetailLabeledImage from "../../components/common/DetailLabeledImage";
+import EntityReviewsList from "../../components/common/EntityReviewsList";
 import Badge from "../../components/ui/badge/Badge";
 import ActionButton from "../../components/common/ActionButton";
 import { formatEntityNumber } from "../../components/common/ParticipantCell";
@@ -102,6 +103,7 @@ export default function FreeBarberDetailDrawer({
       </div>
       <DetailOfferingsList offerings={barber.offerings ?? []} />
       <DetailPackagesList packages={barber.servicePackages ?? []} />
+      <EntityReviewsList targetId={barber.freeBarberUserId} title="Berbere Yapılan Yorumlar" />
 
       <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/[0.05]">
         {barber.isSuspended ? (

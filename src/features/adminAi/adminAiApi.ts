@@ -41,6 +41,22 @@ export const ADMIN_AI_TOOL_LABELS: Record<string, string> = {
   mark_request_processed: "Talep işaretle",
   cancel_appointment: "Randevu iptal",
   delete_rating: "Puan sil",
+  open_page: "Sayfayı aç",
+  search_entities: "Arama",
+};
+
+// AI bir işlem yaptıktan sonra ilgili sayfa cache'lerini tazelemek için
+// hangi tool'un hangi RTK tag'ini geçersiz kılacağı.
+export const ADMIN_AI_TOOL_TAGS: Record<string, string[]> = {
+  ban_user: ["Users"],
+  unban_user: ["Users"],
+  set_subscription: ["Users"],
+  suspend_barber_store: ["BarberStores"],
+  suspend_free_barber: ["FreeBarbers"],
+  resolve_complaint: ["Complaints"],
+  mark_request_processed: ["Requests"],
+  cancel_appointment: ["Appointments"],
+  delete_rating: ["Ratings"],
 };
 
 export const adminAiApi = baseApi.injectEndpoints({
@@ -71,8 +87,8 @@ export const { useAdminAiChatMutation, useAdminAiConfirmMutation } = adminAiApi;
 export const ADMIN_AI_ERROR_MESSAGES: Record<string, string> = {
   admin_ai_error: "Yapay zeka asistanı yanıt veremedi.",
   admin_ai_rate_limit: "İstek limiti aşıldı. Lütfen biraz bekleyin.",
-  "Admin yapay zeka asistanı yapılandırılmamış (Anthropic API anahtarı gerekli).":
-    "Asistan yapılandırılmamış (Anthropic API anahtarı gerekli).",
+  "Admin yapay zeka asistanı yapılandırılmamış (Gemini API anahtarı gerekli).":
+    "Asistan yapılandırılmamış (Gemini API anahtarı gerekli).",
   whisper_failed: "Ses metne çevrilemedi.",
   whisper_rate_limit: "Ses servisi yoğun. Biraz bekleyin.",
   whisper_unavailable: "Ses servisi kullanılamıyor.",

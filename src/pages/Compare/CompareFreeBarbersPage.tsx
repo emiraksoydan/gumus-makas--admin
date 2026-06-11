@@ -12,6 +12,7 @@ import {
 } from "../../features/freeBarbers/freeBarbersApi";
 import Label from "../../components/form/Label";
 import UserAvatar from "../../components/common/UserAvatar";
+import { imageUrlsFromList } from "../../utils/entityImages";
 
 function winnerNum(left: number, right: number): CompareWinner {
   if (left === right) return "tie";
@@ -42,10 +43,28 @@ function buildRows(left: FreeBarberAdmin, right: FreeBarberAdmin): CompareMetric
       winner: winnerNum(left.favoriteCount, right.favoriteCount),
     },
     {
+      label: "Tamamlanan randevu",
+      left: String(left.completedAppointmentCount ?? 0),
+      right: String(right.completedAppointmentCount ?? 0),
+      winner: winnerNum(left.completedAppointmentCount ?? 0, right.completedAppointmentCount ?? 0),
+    },
+    {
+      label: "Toplam kazanç",
+      left: `${Number(left.totalEarnings ?? 0).toLocaleString("tr-TR")} ₺`,
+      right: `${Number(right.totalEarnings ?? 0).toLocaleString("tr-TR")} ₺`,
+      winner: winnerNum(left.totalEarnings ?? 0, right.totalEarnings ?? 0),
+    },
+    {
       label: "Hizmet sayısı",
       left: String(leftServices),
       right: String(rightServices),
       winner: winnerNum(leftServices, rightServices),
+    },
+    {
+      label: "Paket sayısı",
+      left: String(left.servicePackages?.length ?? 0),
+      right: String(right.servicePackages?.length ?? 0),
+      winner: winnerNum(left.servicePackages?.length ?? 0, right.servicePackages?.length ?? 0),
     },
     {
       label: "Müsaitlik",
@@ -131,7 +150,7 @@ export default function CompareFreeBarbersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: "easeOut" }}
             >
-              <HeroCard name={left.fullName} rating={left.rating} available={left.isAvailable} />
+              <HeroCard name={left.fullName} rating={left.rating} available={left.isAvailable} imageList={left.imageList} />
             </motion.div>
             <motion.div
               key={right.id}
@@ -139,7 +158,7 @@ export default function CompareFreeBarbersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: "easeOut", delay: 0.07 }}
             >
-              <HeroCard name={right.fullName} rating={right.rating} available={right.isAvailable} />
+              <HeroCard name={right.fullName} rating={right.rating} available={right.isAvailable} imageList={right.imageList} />
             </motion.div>
           </div>
 
@@ -176,16 +195,23 @@ function HeroCard({
   name,
   rating,
   available,
+  imageList,
 }: {
   name: string;
   rating: number;
   available: boolean;
+  imageList?: { id: string; imageUrl: string }[];
 }) {
   const parts = name.split(" ");
+  const photo = imageUrlsFromList(imageList)[0];
   return (
     <div className="rounded-2xl border border-pink-500/15 bg-gradient-to-br from-pink-500/[0.06] to-white p-5 dark:from-pink-500/10 dark:to-white/[0.02]">
       <div className="flex items-center gap-3">
-        <UserAvatar firstName={parts[0]} lastName={parts.slice(1).join(" ")} size={56} />
+        {photo ? (
+          <img src={photo} alt={name} className="size-14 rounded-2xl object-cover" />
+        ) : (
+          <UserAvatar firstName={parts[0]} lastName={parts.slice(1).join(" ")} size={56} />
+        )}
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">{name}</h3>
           <p className="text-sm text-pink-600 dark:text-pink-400">★ {rating.toFixed(1)}</p>

@@ -1,5 +1,6 @@
 import UserAvatar from "./UserAvatar";
 import CellWithIcon from "./CellWithIcon";
+import DetailSectionTitle from "./DetailSectionTitle";
 
 export interface ManuelBarberListItem {
   id?: string;
@@ -16,10 +17,8 @@ export default function DetailManuelBarbersList({
   if (!barbers.length) return null;
 
   return (
-    <div className="mt-4">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        Manuel berberler ({barbers.length})
-      </p>
+    <div>
+      <DetailSectionTitle icon="manuelBarber" title="Manuel berberler" count={barbers.length} />
       <ul className="space-y-2">
         {barbers.map((b, i) => {
           const parts = b.fullName.trim().split(" ");

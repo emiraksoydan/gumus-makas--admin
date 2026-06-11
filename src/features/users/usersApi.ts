@@ -20,6 +20,8 @@ export interface AdminUser {
   customerNumber: string;
   imageId?: string | null;
   imageUrl?: string | null;
+  /** Bu kullanıcıyı favorileyen aktif kişi sayısı. */
+  favoriteCount: number;
   createdAt: string;
   updatedAt: string;
 }

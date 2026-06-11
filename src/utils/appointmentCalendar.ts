@@ -64,15 +64,24 @@ export function filterAppointmentsForSchedule(
   appointments: AdminAppointment[],
   opts: {
     ownerType?: "store" | "freebarber";
-    ownerId?: string;
+    /** Seçili sahip id'leri. Boş/verilmemiş = o türün TÜMÜ. */
+    ownerIds?: string[];
     windowStart: Date;
     windowEnd: Date;
   },
 ) {
+  const ids = opts.ownerIds;
+  const hasSelection = Array.isArray(ids) && ids.length > 0;
   return appointments.filter((a) => {
     if (!isAppointmentInBookingWindow(a, opts.windowStart, opts.windowEnd)) return false;
-    if (opts.ownerType === "store" && opts.ownerId) return a.storeId === opts.ownerId;
-    if (opts.ownerType === "freebarber" && opts.ownerId) return a.freeBarberId === opts.ownerId;
+    if (opts.ownerType === "store") {
+      if (a.storeId == null) return false;
+      return hasSelection ? ids!.includes(a.storeId) : true;
+    }
+    if (opts.ownerType === "freebarber") {
+      if (a.freeBarberId == null) return false;
+      return hasSelection ? ids!.includes(a.freeBarberId) : true;
+    }
     return true;
   });
 }

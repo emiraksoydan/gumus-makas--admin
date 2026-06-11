@@ -50,11 +50,19 @@ export default function ServicePackagesPage() {
       accessorFn: (row) => row.items.map((i) => i.serviceName).join(", "),
       cell: ({ row }) => {
         const names = row.original.items.map((i) => i.serviceName).filter(Boolean);
+        if (!names.length)
+          return <span className="text-xs text-gray-400">—</span>;
         return (
-          <span className="block max-w-[280px] truncate text-xs text-gray-600 dark:text-gray-300">
-            {names.length ? names.join(", ") : "—"}
-            <span className="ml-1 text-gray-400">({row.original.itemCount})</span>
-          </span>
+          <div className="flex max-w-[360px] flex-wrap gap-1">
+            {names.map((name, i) => (
+              <span
+                key={`${name}-${i}`}
+                className="inline-flex items-center rounded-md bg-brand-500/10 px-2 py-0.5 text-[11px] font-medium text-brand-600 dark:bg-brand-500/15 dark:text-brand-400"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
         );
       },
     },

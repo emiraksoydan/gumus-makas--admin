@@ -49,11 +49,11 @@ function renderEventContent(eventInfo: EventContentArg) {
 
 export default function AppointmentCalendarView({
   ownerType,
-  ownerId,
+  ownerIds,
   ownerLabel,
 }: {
   ownerType?: "store" | "freebarber";
-  ownerId?: string;
+  ownerIds?: string[];
   ownerLabel?: string;
 }) {
   const calendarRef = useRef<FullCalendar>(null);
@@ -64,15 +64,17 @@ export default function AppointmentCalendarView({
 
   const [selected, setSelected] = useState<AdminAppointment | null>(null);
 
+  const ownerIdsKey = (ownerIds ?? []).join(",");
   const filtered = useMemo(
     () =>
       filterAppointmentsForSchedule(allAppointments, {
         ownerType,
-        ownerId,
+        ownerIds,
         windowStart,
         windowEnd,
       }),
-    [allAppointments, ownerType, ownerId, windowStart, windowEnd],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allAppointments, ownerType, ownerIdsKey, windowStart, windowEnd],
   );
 
   const events = useMemo(() => appointmentsToCalendarEvents(filtered), [filtered]);

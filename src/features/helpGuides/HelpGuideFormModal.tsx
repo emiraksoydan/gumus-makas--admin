@@ -149,9 +149,14 @@ export default function HelpGuideFormModal({
             <div>
               <Label>Çeviri Anahtarı (opsiyonel)</Label>
               <Input
-                placeholder="helpGuide.entries.xxx"
+                placeholder="örn. hg_c_01"
                 {...register("translationKey")}
               />
+              <p className="mt-1 text-[11px] leading-snug text-gray-500 dark:text-gray-400">
+                Mobil uygulamanın bu kaydın metnini çok dilli (i18n) göstermesi için
+                kullandığı sabit anahtar. Boş bırakılırsa başlık/açıklama olduğu gibi
+                gösterilir. Benzersiz olmalı (ör. müşteri kayıtları için hg_c_01, hg_c_02…).
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">

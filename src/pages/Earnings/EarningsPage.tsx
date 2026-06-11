@@ -205,7 +205,7 @@ export default function EarningsPage() {
           formatValue={(n) => formatTry(n)}
           icon={<AppIcon name="money" className="size-6" />}
           isLoading={isLoading}
-          accent="brand"
+          accent="info"
           sparkline={spark}
           sparklineLabel="Günlük kazanç"
           categories={sparkDates}
@@ -231,7 +231,7 @@ export default function EarningsPage() {
           formatValue={(n) => formatTry(n)}
           icon={<AppIcon name="chart" className="size-6" />}
           isLoading={isLoading}
-          accent="info"
+          accent="warning"
           sparkline={spark}
           sparklineLabel="Günlük kazanç"
           categories={sparkDates}

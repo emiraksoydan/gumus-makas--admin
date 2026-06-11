@@ -8,6 +8,7 @@ import TableFilterDropdown, {
   type TableFilterValues,
 } from "../../components/common/TableFilterDropdown";
 import UserAvatar from "../../components/common/UserAvatar";
+import CellWithIcon from "../../components/common/CellWithIcon";
 import ActionButton from "../../components/common/ActionButton";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Badge from "../../components/ui/badge/Badge";
@@ -157,6 +158,18 @@ export default function UsersPage() {
           if (!u.isActive) return <Badge size="sm" color="warning" variant="solid">Pasif</Badge>;
           return <Badge size="sm" color="success" variant="solid">Aktif</Badge>;
         },
+      },
+      {
+        id: "favorites",
+        header: "Favori",
+        accessorKey: "favoriteCount",
+        cell: ({ row }) => (
+          <CellWithIcon icon="favorite">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {row.original.favoriteCount ?? 0}
+            </span>
+          </CellWithIcon>
+        ),
       },
       {
         id: "createdAt",

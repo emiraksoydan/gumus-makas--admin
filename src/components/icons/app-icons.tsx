@@ -44,6 +44,8 @@ import {
   HiOutlineNoSymbol,
   HiOutlineMicrophone,
   HiOutlineGift,
+  HiOutlineArrowTrendingUp,
+  HiOutlineArrowTrendingDown,
 } from "react-icons/hi2";
 import { MdOutlineEventSeat, MdOutlineContentCut } from "react-icons/md";
 import { TbRobot } from "react-icons/tb";
@@ -97,7 +99,9 @@ export type AppIconName =
   | "ban"
   | "robot"
   | "microphone"
-  | "package";
+  | "package"
+  | "trendUp"
+  | "trendDown";
 
 const ICON_MAP: Record<AppIconName, IconType> = {
   dashboard: HiOutlineHome,
@@ -149,6 +153,8 @@ const ICON_MAP: Record<AppIconName, IconType> = {
   ban: HiOutlineNoSymbol,
   robot: TbRobot,
   microphone: HiOutlineMicrophone,
+  trendUp: HiOutlineArrowTrendingUp,
+  trendDown: HiOutlineArrowTrendingDown,
 };
 
 export function getAppIcon(name: AppIconName): IconType {

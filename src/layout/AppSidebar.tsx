@@ -64,10 +64,18 @@ const navItems: NavItem[] = [
       { name: "Berber Salonları", path: "/barberstores" },
       { name: "Salon Karşılaştırma", path: "/compare/stores" },
       { name: "Koltuklar", path: "/chairs" },
-      { name: "Hizmetler", path: "/service-offerings" },
-      { name: "Paketler", path: "/service-packages" },
       { name: "Manuel Berberler", path: "/manuel-barbers" },
     ],
+  },
+  {
+    icon: "service",
+    name: "Hizmetler",
+    path: "/service-offerings",
+  },
+  {
+    icon: "package",
+    name: "Paketler",
+    path: "/service-packages",
   },
   {
     icon: "category",
@@ -92,6 +100,11 @@ const managementItems: NavItem[] = [
     icon: "complaint",
     name: "Şikayetler",
     path: "/complaints",
+  },
+  {
+    icon: "image",
+    name: "Sosyal Moderasyon",
+    path: "/social-moderation",
   },
   {
     icon: "request",

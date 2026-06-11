@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useAnimatedMount } from "../../hooks/useAnimatedMount";
+import AppIcon from "../icons/AppIcon";
 
 interface EntityDetailDrawerProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ export default function EntityDetailDrawer({
         data-state={state}
         className={`gm-drawer-panel relative ml-auto flex h-full w-full ${widthClass} flex-col bg-white shadow-2xl dark:bg-gray-900`}
       >
+        <div className="h-1 w-full shrink-0 bg-gradient-to-r from-brand-500 via-brand-400 to-brand-500" />
         <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
           <div className="min-w-0">
             <h3 className="truncate text-base font-semibold text-gray-800 dark:text-white/90">
@@ -72,7 +74,7 @@ export default function EntityDetailDrawer({
             className="shrink-0 rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
             aria-label="Kapat"
           >
-            ✕
+            <AppIcon name="close" className="size-5" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4">

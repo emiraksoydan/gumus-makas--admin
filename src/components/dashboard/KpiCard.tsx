@@ -98,6 +98,37 @@ const accentClasses: Record<
   },
 };
 
+// Kart arka planı için yumuşak gradient + dekoratif daire renkleri (açık tonlu).
+const accentDecor: Record<
+  NonNullable<KpiCardProps["accent"]>,
+  { bg: string; circle: string }
+> = {
+  brand: {
+    bg: "from-brand-100 via-brand-50 to-white dark:from-brand-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-brand-500/20 dark:bg-brand-400/12",
+  },
+  success: {
+    bg: "from-success-100 via-success-50 to-white dark:from-success-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-success-500/20 dark:bg-success-400/12",
+  },
+  warning: {
+    bg: "from-warning-100 via-warning-50 to-white dark:from-warning-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-warning-500/20 dark:bg-warning-400/12",
+  },
+  error: {
+    bg: "from-error-100 via-error-50 to-white dark:from-error-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-error-500/20 dark:bg-error-400/12",
+  },
+  info: {
+    bg: "from-blue-100 via-blue-50 to-white dark:from-blue-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-blue-500/20 dark:bg-blue-400/12",
+  },
+  purple: {
+    bg: "from-purple-100 via-purple-50 to-white dark:from-purple-500/[0.18] dark:via-gray-900 dark:to-gray-900",
+    circle: "bg-purple-500/20 dark:bg-purple-400/12",
+  },
+};
+
 function buildSparkOptions(
   colors: string[],
   chartType: KpiChartType,
@@ -131,6 +162,9 @@ function buildSparkOptions(
       : {}),
     tooltip: {
       enabled: true,
+      // Sabit konum: tooltip kartın sağ-üstünde açılır; soldaki sidebar'a
+      // taşıp kırpılması engellenir (özellikle ilk KPI kartı).
+      fixed: { enabled: true, position: "topRight", offsetX: 0, offsetY: 0 },
       x: { show: hasCategories },
       y: {
         formatter: (val: number) =>
@@ -147,7 +181,7 @@ function buildSparkOptions(
     return {
       ...base,
       plotOptions: {
-        bar: { borderRadius: 3, columnWidth: "55%" },
+        bar: { borderRadius: 4, columnWidth: "92%" },
       },
     };
   }
@@ -188,6 +222,7 @@ export default function KpiCard({
   categories,
 }: KpiCardProps) {
   const c = accentClasses[accent];
+  const decor = accentDecor[accent];
   const series =
     sparkline && sparkline.length > 0
       ? sparkline
@@ -196,8 +231,20 @@ export default function KpiCard({
 
   return (
     <div
-      className={`rounded-2xl border bg-white px-5 pb-5 pt-3 shadow-sm transition hover:shadow-md dark:bg-gray-900 md:px-6 md:pb-6 md:pt-4 ${c.card}`}
+      className={`relative overflow-hidden rounded-2xl border bg-gradient-to-br ${decor.bg} px-5 pb-5 pt-3 shadow-sm transition hover:shadow-md md:px-6 md:pb-6 md:pt-4 ${c.card}`}
     >
+      {/* Dekoratif, üst üste binen yumuşak daireler (Purple şablonundaki gibi).
+          İki yarı saydam daire çakışınca ortada koyulaşan "balon" etkisi oluşur. */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute -right-10 -top-14 size-44 rounded-full ${decor.circle}`}
+      />
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute -bottom-16 right-6 size-36 rounded-full ${decor.circle}`}
+      />
+
+      <div className="relative">
       <div className="mb-1 flex items-center gap-3">
         <div className="h-[52px] min-w-0 flex-1">
           {!isLoading ? (
@@ -237,6 +284,7 @@ export default function KpiCard({
       </div>
 
       {hint ? <p className={`mt-1 text-xs leading-snug ${c.hintColor}`}>{hint}</p> : null}
+      </div>
     </div>
   );
 }

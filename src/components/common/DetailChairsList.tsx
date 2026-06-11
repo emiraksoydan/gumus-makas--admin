@@ -1,5 +1,6 @@
 import Badge from "../ui/badge/Badge";
 import CellWithIcon from "./CellWithIcon";
+import DetailSectionTitle from "./DetailSectionTitle";
 
 export interface ChairListItem {
   id?: string;
@@ -12,10 +13,8 @@ export default function DetailChairsList({ chairs }: { chairs: ChairListItem[] }
   if (!chairs.length) return null;
 
   return (
-    <div className="mt-4">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        Koltuklar ({chairs.length})
-      </p>
+    <div>
+      <DetailSectionTitle icon="chair" title="Koltuklar" count={chairs.length} />
       <ul className="space-y-2">
         {chairs.map((c, i) => (
           <li

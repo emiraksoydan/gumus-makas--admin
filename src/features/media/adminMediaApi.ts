@@ -93,8 +93,19 @@ export const adminMediaApi = baseApi.injectEndpoints({
         },
       providesTags: ["MediaFiles"],
     }),
+    deleteMediaFile: build.mutation<ApiResult, { id: string; category?: string | null }>({
+      query: ({ id, category }) => ({
+        url: `/api/admin/media-files/${id}${category ? `?category=${encodeURIComponent(category)}` : ""}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["MediaFiles"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetMediaFilesQuery, useGetMediaStatsQuery } = adminMediaApi;
+export const {
+  useGetMediaFilesQuery,
+  useGetMediaStatsQuery,
+  useDeleteMediaFileMutation,
+} = adminMediaApi;

@@ -28,30 +28,18 @@ export default function ChatThreadsListPage() {
   const { data: threads = [], isLoading, error, refetch } = useGetChatThreadsQuery();
   const [filter, setFilter] = useState("");
   const [kindFilter, setKindFilter] = useState<ThreadKindFilter>("all");
-  // Hiç mesaj gönderilmemiş favori thread'leri varsayılan olarak gizle
-  const [hideEmptyFavorites, setHideEmptyFavorites] = useState(true);
-
-  // Boş favori thread'ler (favori olup hiç mesaj atılmamış) gizlenebilir
-  const visibleThreads = useMemo(() => {
-    if (!hideEmptyFavorites) return threads;
-    return threads.filter(
-      (t) => !(t.isFavoriteThread && !t.lastMessagePreview?.trim()),
-    );
-  }, [threads, hideEmptyFavorites]);
-
-  const hiddenCount = threads.length - visibleThreads.length;
 
   const appointmentCount = useMemo(
-    () => visibleThreads.filter((t) => !t.isFavoriteThread).length,
-    [visibleThreads],
+    () => threads.filter((t) => !t.isFavoriteThread).length,
+    [threads],
   );
   const favoriteCount = useMemo(
-    () => visibleThreads.filter((t) => t.isFavoriteThread).length,
-    [visibleThreads],
+    () => threads.filter((t) => t.isFavoriteThread).length,
+    [threads],
   );
 
   const filteredThreads = useMemo(() => {
-    let rows = visibleThreads;
+    let rows = threads;
     if (kindFilter === "appointment") rows = rows.filter((t) => !t.isFavoriteThread);
     if (kindFilter === "favorite") rows = rows.filter((t) => t.isFavoriteThread);
     const q = filter.trim().toLowerCase();
@@ -62,7 +50,7 @@ export default function ChatThreadsListPage() {
         t.lastMessagePreview?.toLowerCase().includes(q) ||
         t.participants.some((p) => p.displayName.toLowerCase().includes(q)),
     );
-  }, [visibleThreads, filter, kindFilter]);
+  }, [threads, filter, kindFilter]);
 
   return (
     <>
@@ -86,7 +74,7 @@ export default function ChatThreadsListPage() {
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <BadgeTabs<ThreadKindFilter>
           tabs={[
-            { id: "all", label: "Tümü", badge: visibleThreads.length },
+            { id: "all", label: "Tümü", badge: threads.length },
             { id: "appointment", label: "Randevu", badge: appointmentCount },
             { id: "favorite", label: "Favori", badge: favoriteCount },
           ]}
@@ -100,20 +88,6 @@ export default function ChatThreadsListPage() {
             Sohbet listesi
           </h3>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
-          <button
-            type="button"
-            onClick={() => setHideEmptyFavorites((v) => !v)}
-            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition ${
-              hideEmptyFavorites
-                ? "border-warning-300 bg-warning-50 text-warning-700 dark:border-warning-500/30 dark:bg-warning-500/10 dark:text-warning-400"
-                : "border-gray-300 bg-transparent text-gray-500 dark:border-gray-700 dark:text-gray-400"
-            }`}
-          >
-            <AppIcon name="eye" className="size-3.5" />
-            {hideEmptyFavorites
-              ? `Boş favoriler gizlendi${hiddenCount > 0 ? ` (${hiddenCount})` : ""}`
-              : "Boş favorileri göster"}
-          </button>
           <div className="relative w-full sm:max-w-xs">
             <AppIcon
               name="search"

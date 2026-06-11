@@ -11,6 +11,8 @@ export interface FreeBarberAdmin {
   type: number;
   rating: number;
   favoriteCount: number;
+  completedAppointmentCount?: number;
+  totalEarnings?: number;
   isAvailable: boolean;
   reviewCount: number;
   latitude: number;

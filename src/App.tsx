@@ -48,8 +48,10 @@ import MapPage from "./pages/Map/MapPage";
 import EarningsPage from "./pages/Earnings/EarningsPage";
 import CompareStoresPage from "./pages/Compare/CompareStoresPage";
 import CompareFreeBarbersPage from "./pages/Compare/CompareFreeBarbersPage";
+import SocialModerationPage from "./pages/SocialModeration/SocialModerationPage";
 import "./features/earnings/adminEarningsApi";
 import "./features/adminAi/adminAiApi";
+import "./features/socialModeration/socialModerationApi";
 
 export default function App() {
   return (
@@ -83,6 +85,7 @@ export default function App() {
               <Route path="/service-packages" element={<ServicePackagesPage />} />
               <Route path="/manuel-barbers" element={<ManuelBarbersPage />} />
               <Route path="/complaints" element={<ComplaintsPage />} />
+              <Route path="/social-moderation" element={<SocialModerationPage />} />
               <Route path="/requests" element={<RequestsPage />} />
               <Route path="/blocked" element={<BlockedPage />} />
               <Route path="/ratings" element={<RatingsPage />} />

@@ -27,12 +27,15 @@ export default function EntityDetailHero({
 
   const parts = name.trim().split(" ");
   return (
-    <div className="mb-5 flex justify-center rounded-2xl border border-gray-100 bg-gray-50/80 py-8 dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <div className="mb-5 flex flex-col items-center gap-3 rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-500/[0.07] to-white py-8 dark:border-brand-500/20 dark:from-brand-500/10 dark:to-white/[0.02]">
       <UserAvatar
         firstName={parts[0]}
         lastName={parts.slice(1).join(" ")}
         size={88}
       />
+      <span className="max-w-[80%] truncate text-sm font-medium text-gray-700 dark:text-gray-300">
+        {name}
+      </span>
     </div>
   );
 }

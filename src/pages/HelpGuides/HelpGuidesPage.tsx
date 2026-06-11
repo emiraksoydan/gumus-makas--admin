@@ -136,7 +136,10 @@ export default function HelpGuidesPage() {
                         <Badge size="sm" color="warning" variant="solid">Pasif</Badge>
                       )}
                       {g.translationKey && (
-                        <span className="rounded bg-brand-500/10 px-1.5 py-0.5 text-[10px] text-brand-600 dark:text-brand-400 font-mono">
+                        <span
+                          title="Çeviri anahtarı — mobil uygulamanın bu kaydın çok dilli metnini eşlemek için kullandığı sabit kod."
+                          className="rounded bg-brand-500/10 px-1.5 py-0.5 text-[10px] text-brand-600 dark:text-brand-400 font-mono"
+                        >
                           {g.translationKey}
                         </span>
                       )}

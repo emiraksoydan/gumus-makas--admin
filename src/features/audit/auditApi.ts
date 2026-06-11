@@ -74,6 +74,11 @@ export enum AuditAction {
   AdminFreeBarberUnsuspended = 124,
   AdminRatingDeleted = 125,
   AdminAiChatCompleted = 126,
+  AdminMediaDeleted = 128,
+  AdminSocialPostRemoved = 129,
+  AdminSocialStoryRemoved = 130,
+  AdminSocialProfileRemoved = 131,
+  AdminSocialHighlightRemoved = 132,
 }
 
 export const auditActionLabels: Partial<Record<AuditAction, string>> = {
@@ -149,6 +154,11 @@ export const auditActionLabels: Partial<Record<AuditAction, string>> = {
   [AuditAction.AdminFreeBarberUnsuspended]: "Admin: serbest berber askısını kaldırdı",
   [AuditAction.AdminRatingDeleted]: "Admin: değerlendirmeyi sildi",
   [AuditAction.AdminAiChatCompleted]: "Admin: yapay zeka asistanı kullandı",
+  [AuditAction.AdminMediaDeleted]: "Admin: medya dosyası sildi",
+  [AuditAction.AdminSocialPostRemoved]: "Admin: sosyal gönderiyi kaldırdı",
+  [AuditAction.AdminSocialStoryRemoved]: "Admin: sosyal hikayeyi kaldırdı",
+  [AuditAction.AdminSocialProfileRemoved]: "Admin: sosyal profili kaldırdı",
+  [AuditAction.AdminSocialHighlightRemoved]: "Admin: sosyal öne çıkanı kaldırdı",
 };
 
 /** actionName (PascalCase enum) → Türkçe; bilinmeyen aksiyonlar için yedek */

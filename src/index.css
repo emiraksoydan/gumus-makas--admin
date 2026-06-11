@@ -322,6 +322,12 @@ layer(base);
   @apply gap-1 !rounded-lg !border-gray-200 p-3 !shadow-theme-sm dark:!border-gray-800 dark:!bg-gray-900;
 }
 
+/* Tooltip her zaman üstte kalsın (sidebar z-50 onu kırpıyordu — özellikle
+   ilk KPI kartının sparkline tooltip'i). */
+.apexcharts-tooltip {
+  z-index: 60 !important;
+}
+
 .apexcharts-tooltip-marker {
   margin-right: 6px;
   height: 6px;
@@ -348,6 +354,14 @@ layer(base);
 
 .apexcharts-gridline {
   @apply !stroke-gray-100 dark:!stroke-gray-800;
+}
+
+/* Donut (Dağılım) tooltip'i: apex'in koyu konteynerini şeffaflaştır;
+   görünür açık renk kart custom tooltip içinde üretiliyor. */
+.gm-donut .apexcharts-tooltip {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 #chartTwo .apexcharts-datalabels-group {
   @apply !-translate-y-24;

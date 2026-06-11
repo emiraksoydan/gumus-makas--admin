@@ -16,7 +16,11 @@ import { useGetFreeBarbersQuery } from "../../features/freeBarbers/freeBarbersAp
 
 import { useGetAppointmentsQuery } from "../../features/appointments/appointmentsApi";
 
-import { buildAdminMapMarkers, type AdminMapMarker } from "../../utils/adminMapMarkers";
+import { buildAdminMapMarkers, MAP_MARKER_LABELS, type AdminMapMarker, type MapMarkerKind } from "../../utils/adminMapMarkers";
+
+import BadgeTabs from "../../components/common/BadgeTabs";
+
+type MapKindFilter = "all" | MapMarkerKind;
 
 
 
@@ -51,6 +55,19 @@ export default function MapPage() {
 
 
   const [selectedMarker, setSelectedMarker] = useState<AdminMapMarker | null>(null);
+
+  const [kindFilter, setKindFilter] = useState<MapKindFilter>("all");
+
+  const counts = useMemo(() => {
+    const c: Record<MapMarkerKind, number> = { store: 0, freeBarber: 0, customer: 0 };
+    for (const m of markers) c[m.kind] += 1;
+    return c;
+  }, [markers]);
+
+  const visibleMarkers = useMemo(
+    () => (kindFilter === "all" ? markers : markers.filter((m) => m.kind === kindFilter)),
+    [markers, kindFilter],
+  );
 
 
 
@@ -94,6 +111,19 @@ export default function MapPage() {
 
 
 
+      <div className="mb-4 max-w-2xl overflow-hidden rounded-xl border border-gray-200 dark:border-white/[0.05]">
+        <BadgeTabs<MapKindFilter>
+          tabs={[
+            { id: "all", label: "Tümü", badge: markers.length },
+            { id: "store", label: MAP_MARKER_LABELS.store, badge: counts.store },
+            { id: "freeBarber", label: MAP_MARKER_LABELS.freeBarber, badge: counts.freeBarber },
+            { id: "customer", label: "Müşteri", badge: counts.customer },
+          ]}
+          active={kindFilter}
+          onChange={setKindFilter}
+        />
+      </div>
+
       {isLoading ? (
 
         <div className="flex h-[480px] items-center justify-center rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -106,7 +136,7 @@ export default function MapPage() {
 
         <AdminLocationMap
 
-          markers={markers}
+          markers={visibleMarkers}
 
           height={520}
 

@@ -28,18 +28,6 @@ function formatDate(iso?: string | null) {
 export default function ChatThreadsPage() {
   const { data, isLoading, isFetching, error, refetch } = useGetChatThreadsQuery();
   const [selected, setSelected] = useState<ChatThread | null>(null);
-  // Hiç mesaj gönderilmemiş favori thread'leri varsayılan olarak gizle
-  const [hideEmptyFavorites, setHideEmptyFavorites] = useState(true);
-
-  const filteredData = useMemo(() => {
-    const all = data ?? [];
-    if (!hideEmptyFavorites) return all;
-    return all.filter(
-      (t) => !(t.isFavoriteThread && !t.lastMessagePreview?.trim()),
-    );
-  }, [data, hideEmptyFavorites]);
-
-  const hiddenCount = (data?.length ?? 0) - filteredData.length;
 
   const columns = useMemo<ColumnDef<ChatThread>[]>(
     () => [
@@ -152,7 +140,7 @@ export default function ChatThreadsPage() {
       ) : null}
 
       <DataTable<ChatThread>
-        data={filteredData}
+        data={data ?? []}
         columns={columns}
         isLoading={isLoading || isFetching}
         searchPlaceholder="Başlık, katılımcı, mesaj içeriği ara..."
@@ -162,22 +150,6 @@ export default function ChatThreadsPage() {
         emptyMessage="Sohbet bulunamadı."
         emptyIcon={<AppIcon name="chat" className="size-12 opacity-40" />}
         onRowClick={(row) => setSelected(row)}
-        toolbarRight={
-          <button
-            type="button"
-            onClick={() => setHideEmptyFavorites((v) => !v)}
-            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition ${
-              hideEmptyFavorites
-                ? "border-warning-300 bg-warning-50 text-warning-700 dark:border-warning-500/30 dark:bg-warning-500/10 dark:text-warning-400"
-                : "border-gray-300 bg-transparent text-gray-500 dark:border-gray-700 dark:text-gray-400"
-            }`}
-          >
-            <AppIcon name="eye" className="size-3.5" />
-            {hideEmptyFavorites
-              ? `Boş favoriler gizlendi${hiddenCount > 0 ? ` (${hiddenCount})` : ""}`
-              : "Boş favorileri göster"}
-          </button>
-        }
       />
 
       <ThreadMessagesDrawer

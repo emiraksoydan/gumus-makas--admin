@@ -1,3 +1,5 @@
+import DetailSectionTitle from "./DetailSectionTitle";
+
 interface OfferingItem {
   id?: string;
   serviceName: string;
@@ -14,10 +16,8 @@ export default function DetailOfferingsList({
   if (!offerings.length) return null;
 
   return (
-    <div className="mt-4 sm:col-span-2">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        {title ?? `Hizmetler (${offerings.length})`}
-      </p>
+    <div className="sm:col-span-2">
+      <DetailSectionTitle icon="service" title={title ?? "Hizmetler"} count={offerings.length} />
       <ul className="space-y-2">
         {offerings.map((o, i) => (
           <li

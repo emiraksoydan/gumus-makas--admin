@@ -9,6 +9,7 @@ import DetailLabeledImage from "../../components/common/DetailLabeledImage";
 import DetailWorkingHoursList from "../../components/common/DetailWorkingHoursList";
 import DetailChairsList from "../../components/common/DetailChairsList";
 import DetailManuelBarbersList from "../../components/common/DetailManuelBarbersList";
+import EntityReviewsList from "../../components/common/EntityReviewsList";
 import Badge from "../../components/ui/badge/Badge";
 import ActionButton from "../../components/common/ActionButton";
 import { formatEntityNumber } from "../../components/common/ParticipantCell";
@@ -118,6 +119,7 @@ export default function StoreDetailDrawer({ store, isOpen, onClose }: StoreDetai
       <DetailManuelBarbersList barbers={store.manuelBarbers ?? []} />
       <DetailOfferingsList offerings={offerings} />
       <DetailPackagesList packages={store.servicePackages ?? []} />
+      <EntityReviewsList targetId={store.id} title="Salona Yapılan Yorumlar" />
 
       <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/[0.05]">
         {store.isSuspended ? (

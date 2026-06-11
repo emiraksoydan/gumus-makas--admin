@@ -8,14 +8,19 @@ import Label from "../../components/form/Label";
 import AppIcon from "../../components/icons/AppIcon";
 import type { AppIconName } from "../../components/icons/app-icons";
 import EntityDetailDrawer from "../../components/common/EntityDetailDrawer";
+import ConfirmModal from "../../components/common/ConfirmModal";
+import ActionButton from "../../components/common/ActionButton";
 import {
   MEDIA_CATEGORIES,
   useGetMediaFilesQuery,
   useGetMediaStatsQuery,
+  useDeleteMediaFileMutation,
   type AdminMediaFile,
 } from "../../features/media/adminMediaApi";
 import { resolveMediaUrl } from "../../utils/mediaUrl";
 import { formatBytes } from "../../utils/formatBytes";
+import { useToast } from "../../context/ToastContext";
+import { notifyApiError } from "../../utils/notifyMutation";
 
 function fmtDate(iso: string) {
   try {
@@ -110,7 +115,22 @@ export default function FileManagerPage() {
   const [appliedSearch, setAppliedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [preview, setPreview] = useState<AdminMediaFile | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminMediaFile | null>(null);
   const pageSize = 12;
+  const toast = useToast();
+  const [deleteMediaFile, { isLoading: isDeleting }] = useDeleteMediaFileMutation();
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteMediaFile({ id: deleteTarget.id, category: deleteTarget.category }).unwrap();
+      toast.success("Medya silindi.");
+      if (preview?.id === deleteTarget.id) setPreview(null);
+      setDeleteTarget(null);
+    } catch (err) {
+      notifyApiError(toast, err, "Silme başarısız oldu.");
+    }
+  };
 
   const { data: stats, isLoading: statsLoading } = useGetMediaStatsQuery();
   const { data, isLoading, isFetching, error, refetch } = useGetMediaFilesQuery({
@@ -163,25 +183,23 @@ export default function FileManagerPage() {
       colors: ["#9b8afb", "#fd853a", "#fdb022", "#32d583", "#465fff", "#ee46bc"],
       legend: { position: "bottom", fontFamily: "Outfit, sans-serif" },
       dataLabels: { enabled: false },
-      // Donut/pie tooltip'i tema renklerini otomatik almıyordu (koyu temada
-      // siyah zemin + koyu yazı = okunmuyordu). Tema duyarlı özel tooltip.
+      // Donut/pie tooltip'i koyu temada siyah zemin alıyordu. Kendi kendine
+      // stillenmiş, açık renk zeminli bir kart üretiyoruz (apex konteyneri
+      // index.css'te şeffaflaştırıldı: .gm-donut .apexcharts-tooltip).
       tooltip: {
         enabled: true,
         custom: ({ series, seriesIndex, w }) => {
-          const isDark = document.documentElement.classList.contains("dark");
-          const fg = isDark ? "#ffffff" : "#1d2939";
-          const sub = isDark ? "#98a2b3" : "#475467";
           const label = String(w.globals.labels?.[seriesIndex] ?? "");
           const value = Number(series[seriesIndex] ?? 0);
           const total = (series as number[]).reduce((a, b) => a + b, 0);
           const pct = total ? Math.round((value / total) * 100) : 0;
           const color = w.globals.colors?.[seriesIndex] ?? "#465fff";
           return (
-            `<div style="padding:6px 10px;color:${fg};font-size:12px;font-family:Outfit,sans-serif;line-height:1.4;">` +
-            `<div style="display:flex;align-items:center;gap:6px;font-weight:600;">` +
-            `<span style="width:8px;height:8px;border-radius:9999px;background:${color};display:inline-block;"></span>` +
+            `<div style="padding:8px 12px;background:#ffffff;color:#1d2939;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 16px rgba(16,24,40,0.12);font-size:12px;font-family:Outfit,sans-serif;line-height:1.4;">` +
+            `<div style="display:flex;align-items:center;gap:6px;font-weight:600;color:#1d2939;">` +
+            `<span style="width:9px;height:9px;border-radius:9999px;background:${color};display:inline-block;"></span>` +
             `${label}</div>` +
-            `<div style="color:${sub};margin-top:2px;">${value} dosya · %${pct}</div>` +
+            `<div style="color:#475467;margin-top:3px;">${value} dosya · %${pct}</div>` +
             `</div>`
           );
         },
@@ -400,7 +418,7 @@ export default function FileManagerPage() {
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Tüm kategorilerin oransal payı ({stats?.totalFiles ?? 0} dosya)
               </p>
-              <div className="flex flex-1 flex-col items-center justify-center">
+              <div className="gm-donut flex flex-1 flex-col items-center justify-center">
                 {statsLoading || !donutSeries.length ? (
                   <p className="py-12 text-sm text-gray-500">Grafik yükleniyor...</p>
                 ) : (
@@ -447,8 +465,19 @@ export default function FileManagerPage() {
                           setPreview(file);
                         }
                       }}
-                      className="cursor-pointer overflow-hidden rounded-xl border border-gray-200 text-left transition hover:border-brand-300 hover:shadow-md dark:border-white/[0.06]"
+                      className="group relative cursor-pointer overflow-hidden rounded-xl border border-gray-200 text-left transition hover:border-brand-300 hover:shadow-md dark:border-white/[0.06]"
                     >
+                      <button
+                        type="button"
+                        title="Medyayı sil"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteTarget(file);
+                        }}
+                        className="absolute right-2 top-2 z-10 flex size-8 items-center justify-center rounded-lg bg-white/90 text-error-600 shadow-sm transition hover:bg-error-500 hover:text-white dark:bg-gray-900/80 dark:text-error-400 dark:hover:bg-error-500 dark:hover:text-white"
+                      >
+                        <AppIcon name="trash" className="size-4" />
+                      </button>
                       <MediaPreview file={file} interactive />
                       <div className="space-y-1 p-3">
                         <p className="truncate text-sm font-medium text-gray-800 dark:text-white/90">
@@ -621,10 +650,40 @@ export default function FileManagerPage() {
                   Yeni sekmede aç
                 </a>
               )}
+              <ActionButton
+                tone="danger"
+                variant="soft"
+                icon={<AppIcon name="trash" className="size-4" />}
+                onClick={() => setDeleteTarget(preview)}
+              >
+                Sil
+              </ActionButton>
             </div>
+            <p className="mt-3 text-[11px] text-gray-400">
+              Not: Sertifika ve vergi/işyeri belgesi gibi korumalı görseller silinemez.
+            </p>
           </>
         )}
       </EntityDetailDrawer>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        tone="danger"
+        title="Medyayı sil"
+        message={
+          <>
+            <strong>{deleteTarget?.fileName ?? deleteTarget?.categoryLabel}</strong> medyasını
+            kalıcı olarak silmek istediğinize emin misiniz?
+            <p className="mt-2 text-xs text-error-600">
+              Dosya sunucudan kaldırılır, bu işlem geri alınamaz.
+            </p>
+          </>
+        }
+        confirmText="Sil"
+        isLoading={isDeleting}
+      />
     </>
   );
 }

@@ -1,3 +1,5 @@
+import DetailSectionTitle from "./DetailSectionTitle";
+
 export interface PackageItem {
   id?: string;
   packageName: string;
@@ -16,10 +18,8 @@ export default function DetailPackagesList({
   if (!packages.length) return null;
 
   return (
-    <div className="mt-4">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        {title ?? `Paketler (${packages.length})`}
-      </p>
+    <div>
+      <DetailSectionTitle icon="package" title={title ?? "Paketler"} count={packages.length} />
       <ul className="space-y-2">
         {packages.map((pkg, i) => {
           const itemNames =

@@ -36,6 +36,7 @@ const ROUTES: Record<string, ResolvedPageMeta> = {
   "/categories": { title: "Kategoriler", parents: [] },
   "/help-guides": { title: "Yardım Rehberi", parents: [] },
   "/complaints": { title: "Şikayetler", parents: [] },
+  "/social-moderation": { title: "Sosyal Moderasyon", parents: [] },
   "/requests": { title: "Talepler", parents: [] },
   "/blocked": { title: "Engellenenler", parents: [] },
   "/admins": { title: "Admin Yönetimi", parents: [] },

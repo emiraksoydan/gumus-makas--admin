@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
@@ -6,6 +7,7 @@ import AppIcon from "../icons/AppIcon";
 import ConfirmModal from "../common/ConfirmModal";
 import {
   ADMIN_AI_TOOL_LABELS,
+  ADMIN_AI_TOOL_TAGS,
   resolveAdminAiError,
   useAdminAiChatMutation,
   useAdminAiConfirmMutation,
@@ -13,6 +15,8 @@ import {
   type AdminAIActionResult,
   type AdminAIPendingAction,
 } from "../../features/adminAi/adminAiApi";
+import { baseApi } from "../../store/baseApi";
+import { useAppDispatch } from "../../store/hooks";
 import { useToast } from "../../context/ToastContext";
 import { useAdminVoiceInput } from "../../hooks/useAdminVoiceInput";
 
@@ -41,7 +45,35 @@ export default function AdminAiChatPanel() {
   const [confirm, { isLoading: isConfirmLoading }] = useAdminAiConfirmMutation();
   const { isRecording, isTranscribing, toggleRecording } = useAdminVoiceInput();
   const toast = useToast();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // AI bir işlem yaptıktan sonra: ilgili sayfa cache'ini tazele + open_page ise yönlendir.
+  const applyActionSideEffects = useCallback(
+    (actions?: AdminAIActionResult[]) => {
+      if (!actions?.length) return;
+      const tags = new Set<string>();
+      let navTo: string | null = null;
+      for (const a of actions) {
+        if (!a.success) continue;
+        if (a.tool === "open_page" && a.summary?.startsWith("/")) navTo = a.summary;
+        ADMIN_AI_TOOL_TAGS[a.tool]?.forEach((t) => tags.add(t));
+      }
+      if (tags.size > 0) {
+        dispatch(
+          baseApi.util.invalidateTags(
+            [...tags] as Parameters<typeof baseApi.util.invalidateTags>[0],
+          ),
+        );
+      }
+      if (navTo) {
+        setOpen(false);
+        navigate(navTo);
+      }
+    },
+    [dispatch, navigate],
+  );
 
   const isBusy = isChatLoading || isConfirmLoading || isTranscribing;
 
@@ -98,6 +130,7 @@ export default function AdminAiChatPanel() {
           res.data;
 
         appendAssistant(reply, actionsExecuted);
+        applyActionSideEffects(actionsExecuted);
 
         if (requiresConfirmation && pending?.length) {
           setPendingActions(pending);
@@ -109,7 +142,7 @@ export default function AdminAiChatPanel() {
         toast.error(resolveAdminAiError(msg));
       }
     },
-    [chat, entries, isBusy, toast, appendAssistant],
+    [chat, entries, isBusy, toast, appendAssistant, applyActionSideEffects],
   );
 
   const handleConfirmPending = useCallback(async () => {
@@ -121,6 +154,7 @@ export default function AdminAiChatPanel() {
         return;
       }
       appendAssistant(res.data.reply, res.data.actionsExecuted);
+      applyActionSideEffects(res.data.actionsExecuted);
       setPendingActions([]);
       toast.success("İşlemler uygulandı.");
     } catch (err: unknown) {
@@ -129,7 +163,7 @@ export default function AdminAiChatPanel() {
         "Onay işlemi başarısız.";
       toast.error(resolveAdminAiError(msg));
     }
-  }, [confirm, pendingActions, appendAssistant, toast]);
+  }, [confirm, pendingActions, appendAssistant, toast, applyActionSideEffects]);
 
   const handleVoice = useCallback(() => {
     void toggleRecording(
@@ -226,7 +260,7 @@ export default function AdminAiChatPanel() {
               <AppIcon name="robot" className="size-6" />
               <div>
                 <p className="text-sm font-semibold">Admin Asistan</p>
-                <p className="text-[10px] opacity-90">Claude · yazı veya mikrofon</p>
+                <p className="text-[10px] opacity-90">Gemini · yazı veya mikrofon</p>
               </div>
             </div>
             <button

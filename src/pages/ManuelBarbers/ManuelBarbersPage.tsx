@@ -36,9 +36,16 @@ export default function ManuelBarbersPage() {
               lastName={r.fullName?.split(" ").slice(1).join(" ")}
               imageUrl={r.imageUrl ?? undefined}
             />
-            <span className="font-medium text-gray-800 dark:text-white/90">
-              {r.fullName}
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="font-medium text-gray-800 dark:text-white/90">
+                {r.fullName}
+              </span>
+              {r.storeNo && (
+                <span className="text-[11px] font-semibold text-brand-500 dark:text-brand-400">
+                  {formatEntityNumber(r.storeNo)}
+                </span>
+              )}
+            </div>
           </div>
         );
       },

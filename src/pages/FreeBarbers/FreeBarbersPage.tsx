@@ -103,6 +103,18 @@ export default function FreeBarbersPage() {
         ),
       },
       {
+        id: "favorites",
+        header: "Favori",
+        accessorKey: "favoriteCount",
+        cell: ({ row }) => (
+          <CellWithIcon icon="favorite">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {row.original.favoriteCount ?? 0}
+            </span>
+          </CellWithIcon>
+        ),
+      },
+      {
         id: "schedule",
         header: "Takvim",
         cell: ({ row }) => (

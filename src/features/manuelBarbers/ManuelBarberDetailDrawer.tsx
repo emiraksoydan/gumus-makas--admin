@@ -2,6 +2,7 @@ import EntityDetailDrawer from "../../components/common/EntityDetailDrawer";
 import { useRetained } from "../../hooks/useRetained";
 import EntityDetailHero from "../../components/common/EntityDetailHero";
 import DetailInfoBox from "../../components/common/DetailInfoBox";
+import EntityReviewsList from "../../components/common/EntityReviewsList";
 import type { ManuelBarber } from "./manuelBarbersApi";
 
 function fmtDate(iso?: string | null) {
@@ -52,6 +53,8 @@ export default function ManuelBarberDetailDrawer({
         )}
         <DetailInfoBox label="Berber ID" value={barber.id} className="sm:col-span-2" />
       </div>
+
+      <EntityReviewsList targetId={barber.id} title="Berbere Yapılan Yorumlar" />
     </EntityDetailDrawer>
   );
 }

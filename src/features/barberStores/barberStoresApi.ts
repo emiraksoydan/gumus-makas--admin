@@ -9,6 +9,8 @@ export interface BarberStore {
   type: number; // BarberType: 1=Store, 2=Free
   rating: number;
   favoriteCount: number;
+  completedAppointmentCount?: number;
+  totalEarnings?: number;
   addressDescription?: string | null;
   latitude?: number;
   longitude?: number;

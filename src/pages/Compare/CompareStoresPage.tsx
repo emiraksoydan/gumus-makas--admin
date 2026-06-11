@@ -9,6 +9,7 @@ import CompareMetricTable, {
 import { useGetBarberStoresQuery, type BarberStore } from "../../features/barberStores/barberStoresApi";
 import Label from "../../components/form/Label";
 import UserAvatar from "../../components/common/UserAvatar";
+import { imageUrlsFromList } from "../../utils/entityImages";
 
 function winnerNum(left: number, right: number): CompareWinner {
   if (left === right) return "tie";
@@ -46,10 +47,40 @@ function buildRows(left: BarberStore, right: BarberStore): CompareMetricRow[] {
       winner: winnerNum(left.favoriteCount, right.favoriteCount),
     },
     {
+      label: "Tamamlanan randevu",
+      left: String(left.completedAppointmentCount ?? 0),
+      right: String(right.completedAppointmentCount ?? 0),
+      winner: winnerNum(left.completedAppointmentCount ?? 0, right.completedAppointmentCount ?? 0),
+    },
+    {
+      label: "Toplam kazanç",
+      left: `${Number(left.totalEarnings ?? 0).toLocaleString("tr-TR")} ₺`,
+      right: `${Number(right.totalEarnings ?? 0).toLocaleString("tr-TR")} ₺`,
+      winner: winnerNum(left.totalEarnings ?? 0, right.totalEarnings ?? 0),
+    },
+    {
       label: "Hizmet sayısı",
       left: String(leftServices),
       right: String(rightServices),
       winner: winnerNum(leftServices, rightServices),
+    },
+    {
+      label: "Paket sayısı",
+      left: String(left.servicePackages?.length ?? 0),
+      right: String(right.servicePackages?.length ?? 0),
+      winner: winnerNum(left.servicePackages?.length ?? 0, right.servicePackages?.length ?? 0),
+    },
+    {
+      label: "Koltuk sayısı",
+      left: String(left.chairs?.length ?? 0),
+      right: String(right.chairs?.length ?? 0),
+      winner: winnerNum(left.chairs?.length ?? 0, right.chairs?.length ?? 0),
+    },
+    {
+      label: "Manuel berber",
+      left: String(left.manuelBarbers?.length ?? 0),
+      right: String(right.manuelBarbers?.length ?? 0),
+      winner: winnerNum(left.manuelBarbers?.length ?? 0, right.manuelBarbers?.length ?? 0),
     },
     {
       label: "Açık mı?",
@@ -142,7 +173,7 @@ export default function CompareStoresPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: "easeOut" }}
             >
-              <CompareHeroCard name={left.storeName} rating={left.rating} meta={left.addressDescription} />
+              <CompareHeroCard name={left.storeName} rating={left.rating} meta={left.addressDescription} imageList={left.imageList} />
             </motion.div>
             <motion.div
               key={right.id}
@@ -150,7 +181,7 @@ export default function CompareStoresPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: "easeOut", delay: 0.07 }}
             >
-              <CompareHeroCard name={right.storeName} rating={right.rating} meta={right.addressDescription} />
+              <CompareHeroCard name={right.storeName} rating={right.rating} meta={right.addressDescription} imageList={right.imageList} />
             </motion.div>
           </div>
 
@@ -187,15 +218,22 @@ function CompareHeroCard({
   name,
   rating,
   meta,
+  imageList,
 }: {
   name: string;
   rating: number;
   meta?: string | null;
+  imageList?: { id: string; imageUrl: string }[];
 }) {
+  const photo = imageUrlsFromList(imageList)[0];
   return (
     <div className="rounded-2xl border border-brand-500/15 bg-gradient-to-br from-brand-500/[0.06] to-white p-5 dark:from-brand-500/10 dark:to-white/[0.02]">
       <div className="flex items-center gap-3">
-        <UserAvatar firstName={name} size={56} />
+        {photo ? (
+          <img src={photo} alt={name} className="size-14 rounded-2xl object-cover" />
+        ) : (
+          <UserAvatar firstName={name} size={56} />
+        )}
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">{name}</h3>
           <p className="text-sm text-brand-600 dark:text-brand-400">★ {rating.toFixed(1)}</p>

@@ -136,6 +136,10 @@ export const baseApi = createApi({
     "SavedFilters",
     "Categories",
     "HelpGuides",
+    "SocialPosts",
+    "SocialStories",
+    "SocialProfiles",
+    "SocialHighlights",
   ],
   endpoints: () => ({}),
 });

@@ -1,4 +1,5 @@
 import Badge from "../ui/badge/Badge";
+import DetailSectionTitle from "./DetailSectionTitle";
 import { dayOfWeekLabel, formatTimeSpan } from "../../utils/entityLabels";
 
 export interface WorkingHourItem {
@@ -19,10 +20,8 @@ export default function DetailWorkingHoursList({
   const sorted = [...hours].sort((a, b) => a.dayOfWeek - b.dayOfWeek);
 
   return (
-    <div className="mt-4">
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        Çalışma saatleri ({sorted.length})
-      </p>
+    <div>
+      <DetailSectionTitle icon="time" title="Çalışma saatleri" count={sorted.length} />
       <ul className="space-y-2">
         {sorted.map((h, i) => (
           <li
